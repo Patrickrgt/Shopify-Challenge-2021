@@ -1,38 +1,177 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background: #202225;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Conditional Styling*/
+.active-tab {
+  display: block;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.inactive-tab {
+  display: none;
+}
+/*  */
+/*  */
+/* End of Nav Styling */
+
+
+/* Nav Styling */
+#nav {
   display: flex;
-  flex-direction: column;
+  height: 4vh;
+  background-color: #04111D;
+  align-items: center;
+}
+
+.n-logo {
+  color: white;
+  font-size: 2vh;
+    padding: 4vh;
+}
+.n-item {
+
+}
+
+.n-item button{
+  padding: 4vh;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 2vh;
+}
+/*  */
+/*  */
+/* End of Nav Styling */
+
+/* Photo Styling */
+
+.p-box {
+}
+
+.p-inner {
+  flex: 1;
+  padding: 1vh;
+}
+
+.p-container {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+
+}
+
+.p-border {
+  width: 50vh;
+
+}
+
+.p-img-box {
+  border: 1px solid #151B22;
+  background: rgb(53, 56, 64, .5);
+margin: auto;
+color: white;
+transition: .5s ease all;
+}
+
+.p-img-box:hover {
+  background: #353840;
+  transition: .5s ease all;
+}
+
+.p-button-container {
+display: flex;
+justify-content: flex-end;
+align-items: flex-end;
+}
+
+.p-button-container button {
+  padding: 1vh 1vh 0 0 ;
+  border: none;
+  background: transparent;
+}
+
+.p-button-container img {
+  height: 24px;
+  width: 24px;
+}
+
+.p-title {
+  margin: auto;
+  width: 90%;
+  padding: 1vh;
+  font-size: 3vh;
+}
+
+.p-img-container {
+  padding: 1vh 4vh;
+  margin: auto;
+  display: flex;
+  flex-flow: column;
+}
+
+.p-border div {
+  border-radius: 5px;
+}
+
+.p-container img {
+  border-radius: 5px;
+}
+
+.p-border {
+  flex: 1;
+  background: #202225;
+  padding: 1vh;
+}
+
+.p-sub-col {
+  width: 80%;
+  margin: auto;
+  text-align: left;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  padding-bottom: 2vh;
+}
+
+.p-sub-date {
+padding-top: 1vh;
+font-size: 2vh;
+}
+
+.p-sub {
+  font-size: 2vh;
+}
+
+hr {
+  opacity: .5;
+  margin: 1vh 0;
+}
+
+/*  */
+/*  */
+/* End of Photo Styling */
+
+/* Loading Styling */
+.l-footer {
+  margin: auto;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.l-footer img{
+  width: 100px;
+  height: 100px;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/*  */
+/*  */
+/* End of Loading Styling */

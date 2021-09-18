@@ -41,6 +41,12 @@ class Home extends React.Component {
   }
 
   async handleScroll(e) {
+    console.log(window.scrollY);
+
+    if (window.scrollY > 100) {
+      document.getElementById("nav").style.position = "fixed";
+    } else document.getElementById("nav").style.position = "relative";
+
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
       if (this.state.activeTab === "APOD") {
         if (this.state.gettingAPOD === false) {
@@ -211,9 +217,7 @@ class Home extends React.Component {
             {this.state.allTabs.map((tab) => (
               <section
                 className={
-                  this.state.activeTab === tab
-                    ? " animate__animated animate__fadeIn n-item active"
-                    : " animate__animated animate__fadeIn n-item"
+                  this.state.activeTab === tab ? "n-item active" : "n-item"
                 }
               >
                 <button onClick={(e) => React.memo(this.changeActive(tab))}>

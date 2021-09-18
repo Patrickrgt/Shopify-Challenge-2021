@@ -29,6 +29,8 @@ body {
 
 /* Nav Styling */
 #nav {
+  z-index: 999;
+  width: 100%;
   display: flex;
   background-color: #04111D;
   align-items: center;
@@ -85,9 +87,6 @@ opacity: .5;
 /* End of Nav Styling */
 
 /* Photo Styling */
-
-.p-box {
-}
 
 .p-inner {
   flex: 1;

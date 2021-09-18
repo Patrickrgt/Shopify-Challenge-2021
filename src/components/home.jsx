@@ -187,11 +187,17 @@ class Home extends React.Component {
             <h1 className="n-logo">Spacestagram</h1>
 
             {this.state.showTabs === false ? (
-              <button onClick={() => this.showTabs()} className="n-menu">
+              <button
+                onClick={() => this.showTabs()}
+                className="n-menu animate__animated animate__flipInX"
+              >
                 <img className="n-button" src={Hamburger} alt="" />
               </button>
             ) : (
-              <button onClick={() => this.hideTabs()} className="n-menu">
+              <button
+                onClick={() => this.hideTabs()}
+                className="n-menu animate__animated animate__rotateIn"
+              >
                 <img className="n-button" src={Cancel} alt="" />
               </button>
             )}
@@ -205,7 +211,9 @@ class Home extends React.Component {
             {this.state.allTabs.map((tab) => (
               <section
                 className={
-                  this.state.activeTab === tab ? "n-item active" : "n-item"
+                  this.state.activeTab === tab
+                    ? " animate__animated animate__fadeIn n-item active"
+                    : " animate__animated animate__fadeIn n-item"
                 }
               >
                 <button onClick={(e) => React.memo(this.changeActive(tab))}>

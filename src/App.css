@@ -237,14 +237,14 @@ hr {
 /* Media Query Styling */
 @media screen and (max-width: 1023px){
   .p-border {
-    width: 80%
+    width: 80%;
+    height: 80%
   }
 }
 
 @media screen and (max-width: 425px){
   #nav {
   flex-flow: column;
-
  }
 
  .n-menu-row {

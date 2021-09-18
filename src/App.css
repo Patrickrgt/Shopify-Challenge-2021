@@ -58,7 +58,7 @@ opacity: .5;
 }
 
 .n-item:hover {
-  opacity: 50%;
+color: rgb(128, 128, 128);
   transition: 1s ease all;
 }
 

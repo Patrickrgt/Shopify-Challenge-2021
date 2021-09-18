@@ -68,7 +68,7 @@ opacity: .5;
 }
 
 .active {
-  opacity: .5;
+  color: rgb(128, 128, 128);
 }
 
 .n-item button{

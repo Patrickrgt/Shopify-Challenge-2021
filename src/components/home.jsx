@@ -167,6 +167,7 @@ class Home extends React.Component {
   async changeActive(e) {
     this.setState({
       activeTab: e,
+      showTabs: false,
     });
   }
 

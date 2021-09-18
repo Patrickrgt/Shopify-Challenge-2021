@@ -2,6 +2,8 @@ import React from "react";
 // import RandomName from "./randomName";
 import LikeHeart from "../img/heart.svg";
 import FilledHeart from "../img/filledHeart.svg";
+import Hamburger from "../img/hamburger.svg";
+import Cancel from "../img/cancel.svg";
 import Loading from "../img/loading.gif";
 
 class Home extends React.Component {
@@ -10,23 +12,18 @@ class Home extends React.Component {
     apiKey: "gi4ZhiNqn90aKZyhpLp3H5dpDMEKaCS4EAXcYQnX",
     //   Conditional
     gettingAPOD: false,
-    activeTab: "",
+    activeTab: "APOD",
     loading: false,
+    showTabs: false,
     // Query Section
     apodQuery: [],
-    marsQuery: [],
-    epicQuery: [],
-    // Testing
-    nasaAPI: [],
-    queryAPI: [],
     // Liked Section
-    marsLiked: [],
-    epicLiked: [],
     apodLiked: [],
     // Misc
     EPICImages: [],
     // Tabs
-    allTabs: ["Mars", "APOD", "EPIC", "Liked"],
+    allTabs: ["APOD", "Liked"],
+    tabRef: ["apodQuery", "apodLiked"],
     // Dates
     day: 0,
     year: 0,
@@ -35,8 +32,6 @@ class Home extends React.Component {
 
   async componentDidMount() {
     this.APODImage();
-    this.marsImage();
-    this.EPICImage();
 
     window.addEventListener("scroll", () => this.handleScroll(), true);
   }
@@ -72,7 +67,7 @@ class Home extends React.Component {
     var year = this.state.year;
     var month = this.state.month;
     //   Date conditionals to make sure everything is smooth
-    if (day < 0) {
+    if (day <= 0) {
       month = this.state.month - 1;
       var daysInMonth = new Date(year, month, 0).getDate();
       day += daysInMonth;
@@ -108,29 +103,6 @@ class Home extends React.Component {
   // * * *
   // * * *
 
-  getStableDates() {
-    //   Date initalization
-    var day = this.state.day - 7;
-    var year = this.state.year;
-    var month = this.state.month;
-    //   Date conditionals to make sure everything is smooth
-    if (day < 0) {
-      month = this.state.month - 1;
-      var daysInMonth = new Date(year, month, 0).getDate();
-      day += daysInMonth;
-      if (month === 0) {
-        month += 12;
-        year = this.state.year - 1;
-      }
-    }
-    //   State date initalization
-    this.setState({
-      day,
-      month,
-      year,
-    });
-  }
-
   //   Initalizes APOD Tab
   async APODImage() {
     //   Date initalization
@@ -145,7 +117,9 @@ class Home extends React.Component {
       year,
     });
     var daysInMonth = new Date(year, month, 0).getDate();
-    if (day < 0) {
+    if (day <= 0) {
+      month = this.state.month - 1;
+      daysInMonth = new Date(year, month, 0).getDate();
       day += daysInMonth;
     }
 
@@ -160,88 +134,22 @@ class Home extends React.Component {
     console.log(this.state.apodQuery);
   }
 
-  async test() {
-    console.log(this.state.apodQuery);
-    console.log(this.state.apodLiked.includes(this.state.apodQuery));
-  }
-
-  async marsImage() {
-    await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=${this.state.apiKey}`
-    )
-      .then((response) => response.json())
-      .then((data) =>
-        this.setState({
-          marsQuery: data.photos,
-        })
-      );
-  }
-
-  async EPICImage() {
-    var imgUrls = [];
-    await fetch(
-      `https://api.nasa.gov/EPIC/api/natural/images?api_key=${this.state.apiKey}`
-    )
-      .then((response) => response.json())
-      .then((data) =>
-        this.setState({ epicQuery: data, activeTab: "EPIC" }, () => {
-          this.state.epicQuery.forEach((epic) => {
-            let date = epic.date
-              .split(/(\s+)/)
-              .filter((epic) => epic.trim().length > 0)[0];
-
-            let concatUrl = `https://api.nasa.gov/EPIC/archive/natural/${date.replaceAll(
-              "-",
-              "/"
-            )}/png/${epic.image}.png?api_key=${this.state.apiKey}`;
-            imgUrls.push(concatUrl);
-          });
-        })
-      );
-    this.setState({
-      EPICImages: imgUrls,
-    });
-  }
-
   async like(e, i) {
-    if (this.state.activeTab === "Mars") {
-      await this.setState(
-        {
-          marsLiked: [e, ...this.state.marsLiked],
-        },
-        console.log(this.state.marsLiked)
-      );
-    } else if (this.state.activeTab === "EPIC") {
-      await this.setState(
-        {
-          epicLiked: [e, ...this.state.epicLiked],
-        },
-        console.log(this.state.marsLiked)
-      );
-    } else if (this.state.activeTab === "APOD") {
-      await this.setState(
-        {
-          apodLiked: [e, ...this.state.apodLiked],
-        },
-        console.log(this.state.marsLiked)
-      );
+    if (this.state.activeTab === "APOD") {
+      await this.setState({
+        apodLiked: [e, ...this.state.apodLiked],
+      });
     }
   }
 
   async unlike(e, i) {
-    if (this.state.activeTab === "Mars") {
-      const oldLikes = this.state.marsLiked;
+    if (this.state.activeTab === "APOD") {
+      const oldLikes = this.state.apodLiked;
       const newLikes = oldLikes.filter((item) => item !== e);
       this.setState({
-        marsLiked: newLikes,
+        apodLiked: newLikes,
       });
-    } else if (this.state.activeTab === "EPIC") {
-      const oldLikes = this.state.epicLiked;
-      const newLikes = oldLikes.filter((item) => item !== e);
-      this.setState({
-        epicLiked: newLikes,
-      });
-    } else if (this.state.activeTab === "APOD") {
+    } else if (this.state.activeTab === "Liked") {
       const oldLikes = this.state.apodLiked;
       const newLikes = oldLikes.filter((item) => item !== e);
       this.setState({
@@ -256,22 +164,56 @@ class Home extends React.Component {
     });
   }
 
+  async showTabs() {
+    this.setState({
+      showTabs: true,
+    });
+  }
+
+  async hideTabs() {
+    this.setState({
+      showTabs: false,
+    });
+  }
+
   render() {
     return (
       <div>
         {/*  */}
         {/*  */}
         {/* NAVIGATION SECTION */}
-        <nav id="nav">
-          <button onClick={() => this.test()}>test</button>
-          <h1 className="n-logo">NASA Viewable</h1>
-          {this.state.allTabs.map((tab) => (
-            <section className="n-item">
-              <button onClick={(e) => React.memo(this.changeActive(tab))}>
-                {tab}
+        <nav id="nav" className="animate__animated animate__fadeInDown">
+          <section className="n-menu-row">
+            <h1 className="n-logo">Spacestagram</h1>
+
+            {this.state.showTabs === false ? (
+              <button onClick={() => this.showTabs()} className="n-menu">
+                <img className="n-button" src={Hamburger} alt="" />
               </button>
-            </section>
-          ))}
+            ) : (
+              <button onClick={() => this.hideTabs()} className="n-menu">
+                <img className="n-button" src={Cancel} alt="" />
+              </button>
+            )}
+          </section>
+
+          <nav
+            className={
+              this.state.showTabs === true ? "n-menu-active" : "n-menu-inactive"
+            }
+          >
+            {this.state.allTabs.map((tab) => (
+              <section
+                className={
+                  this.state.activeTab === tab ? "n-item active" : "n-item"
+                }
+              >
+                <button onClick={(e) => React.memo(this.changeActive(tab))}>
+                  {tab}
+                </button>
+              </section>
+            ))}
+          </nav>
         </nav>
         {/* END OF NAVIGATION SECTION */}
         {/*  */}
@@ -291,7 +233,7 @@ class Home extends React.Component {
               {/* Post Container */}
               <div className="p-container">
                 {this.state.apodQuery.map((apod, index) => (
-                  <section className="p-border">
+                  <section className="animate__animated animate__fadeIn p-border">
                     <div className="p-img-box">
                       <article className="p-button-container">
                         {/* Like Button */}
@@ -308,18 +250,22 @@ class Home extends React.Component {
                       {/* Post Image */}
                       <div className="p-img-container">
                         {apod.url.includes("youtube") ? (
-                          <img
-                            alt={apod.explanation}
-                            src={apod.thumbnail_url}
-                          ></img>
+                          <a href={apod.url}>
+                            <img
+                              alt={apod.explanation}
+                              src={apod.thumbnail_url}
+                            ></img>
+                          </a>
                         ) : (
                           <img alt={apod.explanation} src={apod.url}></img>
                         )}
                       </div>
                       {/* Title of Post */}
-                      <h1 className="p-title">{apod.title}</h1>
+                      <h1 className="p-title animate__animated animate__fadeInUp">
+                        {apod.title}
+                      </h1>
                       {/* Sub */}
-                      <aside className="p-sub-col">
+                      <aside className="p-sub-col animate__animated animate__fadeInUp">
                         <span className="p-sub-date">
                           <p>Date of Capture: {apod.date} </p>
                         </span>
@@ -348,182 +294,7 @@ class Home extends React.Component {
         {/*  */}
         {/*  */}
 
-        {/*  */}
-        {/*  */}
-        {/* EPIC SECTION */}
-        {/* {this.state.activeTab === "EPIC" ? (
-          <main
-            className={
-              this.state.activeTab === "EPIC" ? "active-tab" : "inactive-tab"
-            }
-          >
-            <div className="p-box">
-              <div className="p-container">
-                {this.state.epicQuery.map((epic, index) => (
-                  <section className="p-border">
-                    <div>
-                      <h1>
-                        ID: {epic.identifier} Name:{" "}
-                        {RandomName(epic.identifier)}
-                      </h1>
-                      <img src={this.state.EPICImages[index]}></img>
-                      <aside className="p-sub-like">
-                        <button
-                          id={`epic${index}`}
-                          onClick={(e) => this.like(epic, index)}
-                        >
-                          <img src="" alt="" />
-                        </button>
-                      </aside>
-                      <aside className="p-sub-row">
-                        <h3>
-                          Centroid Coordinates: {epic.centroid_coordinates.lat}{" "}
-                          {", "} {epic.centroid_coordinates.lon}{" "}
-                        </h3>
-                        <h3>Identifier: {epic.identifier} </h3>
-                        <h3>Date of Capture: {epic.date} </h3>
-                      </aside>
-                    </div>
-                  </section>
-                ))}
-              </div>
-            </div>
-          </main>
-        ) : (
-          <h1></h1>
-        )} */}
-        {/* END OF EPIC SECTION */}
-        {/*  */}
-        {/*  */}
-
-        {/*  */}
-        {/*  */}
-        {/* MARS ROVER SECTION */}
-
-        {/* {this.state.activeTab === "Mars" ? (
-          <main
-            className={
-              this.state.activeTab === "Mars" ? "active-tab" : "inactive-tab"
-            }
-          >
-            <div className="p-box">
-              <div className="p-container">
-                {this.state.marsQuery.map((mars, index) => (
-                  <section className="p-border">
-                    <div>
-                      <h1>
-                        ID: {mars.id} Name: {RandomName(mars.id)}
-                      </h1>
-
-                      <img src={mars.img_src}></img>
-
-                      <aside className="p-sub-like">
-                        {this.state.marsLiked.includes(mars) ? (
-                          <button onClick={(e) => this.unlike(mars, index)}>
-                            <img src="" alt="" />
-                          </button>
-                        ) : (
-                          <button onClick={(e) => this.like(mars, index)}>
-                            <img src="" alt="" />
-                          </button>
-                        )}
-                      </aside>
-
-                      <aside className="p-sub-row">
-                        <h3>Camera: {mars.camera.name} </h3>
-                        <h3>Rover: {mars.rover.id} </h3>
-                        <h3>Date of Capture: {mars.earth_date} </h3>
-                      </aside>
-                    </div>
-                  </section>
-                ))}
-              </div>
-            </div>
-          </main>
-        ) : (
-          <h1></h1>
-        )} */}
-        {/* END OF MARS ROVER SECTION */}
-        {/*  */}
-        {/*  */}
-
-        {/*  */}
-        {/*  */}
-        {/* LiIKED SECTION */}
-        {/* {this.state.marsLiked !== [] ? (
-          <main
-            className={
-              this.state.activeTab === "Liked" ? "active-tab" : "inactive-tab"
-            }
-          >
-            <div className="p-box">
-              <div className="p-container">
-                {this.state.marsLiked.map((mars, index) => (
-                  <section className="p-border">
-                    <div>
-                      <h1>
-                        ID: {mars.id} Name: {RandomName(mars.id)}
-                      </h1>
-                      <img src={mars.img_src}></img>
-                      <aside className="p-sub-like">
-                        <button onClick={(e) => this.like(mars)}>
-                          <img src="" alt="" />
-                        </button>
-                      </aside>
-                      <aside className="p-sub-row">
-                        <h3>Camera: {mars.camera.name} </h3>
-                        <h3>Rover: {mars.rover.id} </h3>
-                        <h3>Date of Capture: {mars.earth_date} </h3>
-                      </aside>
-                    </div>
-                  </section>
-                ))}
-              </div>
-            </div>
-          </main>
-        ) : (
-          <h1></h1>
-        )}
-
-        {this.state.epicLiked !== [] ? (
-          <main
-            className={
-              this.state.activeTab === "Liked" ? "active-tab" : "inactive-tab"
-            }
-          >
-            <div className="p-box">
-              <div className="p-container">
-                {this.state.epicLiked.map((epic, index) => (
-                  <section className="p-border">
-                    <div>
-                      <h1>
-                        ID: {epic.identifier} Name:{" "}
-                        {RandomName(epic.identifier)}
-                      </h1>
-                      <img src={this.state.EPICImages[index]}></img>
-                      <aside className="p-sub-like">
-                        <button onClick={(e) => this.like(epic)}>
-                          <img src="" alt="" />
-                        </button>
-                      </aside>
-                      <aside className="p-sub-row">
-                        <h3>
-                          Centroid Coordinates: {epic.centroid_coordinates.lat}{" "}
-                          {", "} {epic.centroid_coordinates.lon}{" "}
-                        </h3>
-                        <h3>Identifier: {epic.identifier} </h3>
-                        <h3>Date of Capture: {epic.date} </h3>
-                      </aside>
-                    </div>
-                  </section>
-                ))}
-              </div>
-            </div>
-          </main>
-        ) : (
-          <h1></h1>
-        )} */}
-
+        {/* APOD Liked */}
         {this.state.apodLiked !== [] ? (
           <main
             className={
@@ -548,10 +319,12 @@ class Home extends React.Component {
                       </article>
                       <div className="p-img-container">
                         {apod.url.includes("youtube") ? (
-                          <img
-                            alt={apod.explanation}
-                            src={apod.thumbnail_url}
-                          ></img>
+                          <a href={apod.url}>
+                            <img
+                              alt={apod.explanation}
+                              src={apod.thumbnail_url}
+                            ></img>
+                          </a>
                         ) : (
                           <img alt={apod.explanation} src={apod.url}></img>
                         )}
@@ -575,10 +348,9 @@ class Home extends React.Component {
             </div>
           </main>
         ) : (
-          <span></span>
+          <span>Like some posts, your list is empty!</span>
         )}
-
-        {/* END OF MARS ROVER SECTION */}
+        {/* END OF APOD SECTION */}
         {/*  */}
         {/*  */}
       </div>

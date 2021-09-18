@@ -1,9 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Space+Mono&display=swap');
 
 * {
   padding: 0;
   margin: 0;
   font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+
 }
 
 body {
@@ -26,27 +30,55 @@ body {
 /* Nav Styling */
 #nav {
   display: flex;
-  height: 4vh;
   background-color: #04111D;
   align-items: center;
 }
 
 .n-logo {
   color: white;
-  font-size: 2vh;
-    padding: 4vh;
+  flex: 1;
+  padding: 4vh;
+  font-family: 'Space Mono', sans-serif;
+  letter-spacing: 3px;
+  font-weight: 800;
 }
-.n-item {
 
+.n-menu {
+  display: none;
+}
+
+.n-item-hidden {
+opacity: .5;
+}
+
+.n-item {
+  transition: 1s ease all;
+}
+
+.n-item:hover {
+  opacity: 50%;
+  transition: 1s ease all;
+}
+
+.n-button {
+  width: 24px;
+  height: 24px;;
+}
+
+.active {
+  opacity: .5;
 }
 
 .n-item button{
+  font-family: 'Space Mono', sans-serif;
+  letter-spacing: 3px;
+  font-size: 3vh;
   padding: 4vh;
   font-weight: 700;
   border: none;
   background: transparent;
   color: white;
-  font-size: 2vh;
+ 
 }
 /*  */
 /*  */
@@ -66,20 +98,17 @@ body {
   display: flex;
   flex-wrap: wrap;
   text-align: center;
-
+  overflow-y: hidden;
 }
 
-.p-border {
-  width: 50vh;
 
-}
 
 .p-img-box {
   border: 1px solid #151B22;
   background: rgb(53, 56, 64, .5);
 margin: auto;
 color: white;
-transition: .5s ease all;
+transition: 1s ease all;
 }
 
 .p-img-box:hover {
@@ -116,6 +145,11 @@ align-items: flex-end;
   margin: auto;
   display: flex;
   flex-flow: column;
+  overflow:auto;
+}
+
+.p-img-container img {
+  object-fit: contain;
 }
 
 .p-border div {
@@ -126,10 +160,22 @@ align-items: flex-end;
   border-radius: 5px;
 }
 
+.n-menu-active{
+  display: flex;
+  flex-flow: row;
+}
+
+.n-menu-inactive{
+  display: flex;
+  flex-flow: row;
+}
+
 .p-border {
   flex: 1;
   background: #202225;
   padding: 1vh;
+    transition: all 1s ease;
+    width: 50vh
 }
 
 .p-sub-col {
@@ -175,3 +221,51 @@ hr {
 /*  */
 /*  */
 /* End of Loading Styling */
+
+/* Animation Styling */
+.animate__animated.animate__fadeIn {
+  --animate-duration: .5s;
+}
+
+.animate__animated.animate__fadeInUp {
+  --animate-duration: 1s;
+}
+/*  */
+/*  */
+/* End of Animation Styling */
+
+/* Media Query Styling */
+@media screen and (max-width: 1023px){
+  .p-border {
+    width: 80%
+  }
+}
+
+@media screen and (max-width: 425px){
+  #nav {
+  flex-flow: column;
+
+ }
+
+ .n-menu-row {
+   display: flex;
+   flex-flow: row;
+ }
+
+ .n-menu {
+   background: transparent;
+   border: none;
+   display: block;
+ }
+
+ .n-menu-active {
+  display: block;
+ }
+
+ .n-menu-inactive {
+  display: none;
+ }
+}
+/*  */
+/*  */
+/* End of Media Query Styling */

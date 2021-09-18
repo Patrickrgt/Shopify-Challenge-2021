@@ -263,12 +263,10 @@ class Home extends React.Component {
                       {/* Post Image */}
                       <div className="p-img-container">
                         {apod.url.includes("youtube") ? (
-                          <a href={apod.url}>
-                            <img
-                              alt={apod.explanation}
-                              src={apod.thumbnail_url}
-                            ></img>
-                          </a>
+                          <img
+                            alt={apod.explanation}
+                            src={apod.thumbnail_url}
+                          ></img>
                         ) : (
                           <img alt={apod.explanation} src={apod.url}></img>
                         )}

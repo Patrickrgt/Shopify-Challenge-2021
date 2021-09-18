@@ -148,6 +148,10 @@ align-items: flex-end;
   overflow:auto;
 }
 
+.p-img-container img {
+  object-fit: cover;
+}
+
 .p-border div {
   border-radius: 5px;
 }

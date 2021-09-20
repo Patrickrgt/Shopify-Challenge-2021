@@ -3,7 +3,7 @@ This project is my response to Shopify's Front End Developer Intern Challenge.
 
 ## Project Inspiration and Challenges
 I took inspiration from Pinterest and studied masonry grids to achieve my desired look. Playing around with cookies
-was a challenge as I had to wrap objects and store them into cookies and unwrap them into objects when the user revista the page.
+was a challenge as I had to wrap objects and store them into cookies and unwrap them into objects when the user re-visits the page.
 This was achieved by retrieving a unique identifier from each APOD object and storing that string into the cookie. Once the user
 re-visits the page, the application accesses the array in the cookie to match identifiers with the original array of posts. 
 

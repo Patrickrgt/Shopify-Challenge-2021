@@ -378,7 +378,7 @@ class Home extends React.Component {
                         {/* If post is a youtube video then click link for video */}
                         <div>
                           {apod.url.includes("youtube") ? (
-                            <a href={apod.url}>
+                            <a className="p-link" href={apod.url}>
                               <h1 className="p-title animate__animated animate__fadeInUp">
                                 {apod.title}
                               </h1>
@@ -480,7 +480,7 @@ class Home extends React.Component {
                         {/* If post is a youtube video then click link for video */}
                         <div>
                           {apod.url.includes("youtube") ? (
-                            <a href={apod.url}>
+                            <a className="p-link" href={apod.url}>
                               <h1 className="p-title animate__animated animate__fadeInUp">
                                 {apod.title}
                               </h1>

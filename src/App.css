@@ -161,6 +161,19 @@ align-items: flex-end;
   font-size: 3vh;
 }
 
+.p-link {
+  text-decoration: none;
+  color: #7289DA;
+  transition: all 1s ease;
+}
+
+.p-link:hover {
+  text-decoration: none;
+  color: #576baa;
+  transition: all 1s ease;
+}
+
+
 .p-img-container {
   padding: 1vh 4vh;
   margin: auto;

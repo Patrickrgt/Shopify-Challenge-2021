@@ -5,33 +5,70 @@ import FilledHeart from "../img/filledHeart.svg";
 import Hamburger from "../img/hamburger.svg";
 import Cancel from "../img/cancel.svg";
 import Loading from "../img/loading.gif";
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 
 class Home extends React.Component {
-  state = {
-    //   API Key
-    apiKey: "gi4ZhiNqn90aKZyhpLp3H5dpDMEKaCS4EAXcYQnX",
-    //   Conditional
-    gettingAPOD: false,
-    activeTab: "APOD",
-    loading: false,
-    showTabs: false,
-    // Query Section
-    apodQuery: [],
-    // Liked Section
-    apodLiked: [],
-    // Misc
-    EPICImages: [],
-    // Tabs
-    allTabs: ["APOD", "Liked"],
-    tabRef: ["apodQuery", "apodLiked"],
-    // Dates
-    day: 0,
-    year: 0,
-    month: 0,
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired,
   };
 
+  constructor(props) {
+    super(props);
+
+    const { cookies } = props;
+    this.state = {
+      apodLiked: [],
+      //   API Key
+      apiKey: "ciu4LVJAv0P9RDprNhplCmvZSm3JZOfN46dWHKff",
+      //   Conditional
+      gettingAPOD: false,
+      activeTab: "APOD",
+      loading: false,
+      showTabs: false,
+      // Query Section
+      apodQuery: cookies.get("apodQuery") || [],
+      // Liked Section
+      apodDates: cookies.get("apodLiked") || [],
+      // Misc
+      EPICImages: [],
+      // Tabs
+      allTabs: ["APOD", "Liked"],
+      tabRef: ["apodQuery", "apodLiked"],
+      // Dates
+      day: 0,
+      year: 0,
+      month: 0,
+    };
+  }
+
+  // state = {
+  //   //   API Key
+  //   apiKey: "ciu4LVJAv0P9RDprNhplCmvZSm3JZOfN46dWHKff",
+  //   //   Conditional
+  //   gettingAPOD: false,
+  //   activeTab: "APOD",
+  //   loading: false,
+  //   showTabs: false,
+  //   // Query Section
+  //   apodQuery: [],
+  //   // Liked Section
+
+  //   // Misc
+  //   EPICImages: [],
+  //   // Tabs
+  //   allTabs: ["APOD", "Liked"],
+  //   tabRef: ["apodQuery", "apodLiked"],
+  //   // Dates
+  //   day: 0,
+  //   year: 0,
+  //   month: 0,
+  // };
+
   async componentDidMount() {
-    this.APODImage();
+    if (this.state.apodQuery.length <= 0) {
+      this.APODImage();
+    }
 
     window.addEventListener("scroll", () => this.handleScroll(), true);
   }
@@ -41,8 +78,6 @@ class Home extends React.Component {
   }
 
   async handleScroll(e) {
-    console.log(window.scrollY);
-
     if (window.scrollY > 100) {
       document.getElementById("nav").style.position = "fixed";
     } else document.getElementById("nav").style.position = "relative";
@@ -56,8 +91,6 @@ class Home extends React.Component {
               loading: true,
             },
             () => {
-              console.log(this.state.gettingAPOD);
-              console.log(this.state.apodLiked);
               this.getMoreAPOD();
             }
           );
@@ -103,7 +136,24 @@ class Home extends React.Component {
           gettingAPOD: false,
         });
       });
-    console.log(this.state.apodQuery);
+
+    if (this.state.apodDates.length > 0) {
+      let i = 0;
+      let posts = [];
+      this.state.apodQuery.forEach(() => {
+        var res = this.state.apodQuery.filter((el) =>
+          el.date.includes(this.state.apodDates[i])
+        );
+        i++;
+        if (res.length > 0) {
+          posts.push(...res);
+        }
+      });
+
+      this.setState({
+        apodLiked: posts,
+      });
+    } else return;
   }
   // End of getMoreAPOD
   // * * *
@@ -132,34 +182,66 @@ class Home extends React.Component {
     let dateQuery = `https://api.nasa.gov/planetary/apod?start_date=${year}-${month}-${day}&thumbs=true&api_key=${this.state.apiKey}`;
     await fetch(dateQuery)
       .then((response) => response.json())
-      .then((data) =>
+      .then((data) => {
         this.setState({
           apodQuery: data.reverse(),
-        })
-      );
-    console.log(this.state.apodQuery);
+        });
+      });
+
+    if (this.state.apodDates.length > 0) {
+      let i = 0;
+      let posts = [];
+      this.state.apodQuery.forEach(() => {
+        var res = this.state.apodQuery.filter((el) =>
+          el.date.includes(this.state.apodDates[i])
+        );
+        i++;
+        if (res.length > 0) {
+          posts.push(...res);
+        }
+      });
+
+      this.setState({
+        apodLiked: posts,
+      });
+    } else return;
   }
 
   async like(e, i) {
+    const { cookies } = this.props;
+
     if (this.state.activeTab === "APOD") {
-      await this.setState({
-        apodLiked: [e, ...this.state.apodLiked],
-      });
+      await this.setState(
+        {
+          apodLiked: [e, ...this.state.apodLiked],
+        },
+        () => {
+          const { dates } = { dates: this.state.apodLiked.map((a) => a.date) };
+
+          cookies.set("apodLiked", dates, { path: "/" });
+        }
+      );
     }
   }
 
   async unlike(e, i) {
     if (this.state.activeTab === "APOD") {
+      const oldDates = this.state.apodDates;
+      const newDates = oldDates.filter((item) => item !== e.date);
       const oldLikes = this.state.apodLiked;
       const newLikes = oldLikes.filter((item) => item !== e);
       this.setState({
         apodLiked: newLikes,
+        apodDates: newDates,
       });
     } else if (this.state.activeTab === "Liked") {
+      const oldDates = this.state.apodDates;
+      const newDates = oldDates.filter((item) => item !== e.date);
       const oldLikes = this.state.apodLiked;
       const newLikes = oldLikes.filter((item) => item !== e);
       this.setState({
         apodLiked: newLikes,
+        apodDates: newDates,
       });
     }
   }
@@ -244,51 +326,59 @@ class Home extends React.Component {
             {/* Overall Post Container */}
             <div className="p-box">
               {/* Post Container */}
-              <div className="p-container">
-                {this.state.apodQuery.map((apod, index) => (
-                  <section className="animate__animated animate__fadeIn p-border">
-                    <div className="p-img-box">
-                      <article className="p-button-container">
-                        {/* Like Button */}
-                        {this.state.apodLiked.reverse().includes(apod) ? (
-                          <button onClick={(e) => this.unlike(apod, index)}>
-                            <img alt="You liked this" src={FilledHeart} />
-                          </button>
-                        ) : (
-                          <button onClick={(e) => this.like(apod, index)}>
-                            <img alt="Click to like this" src={LikeHeart} />
-                          </button>
-                        )}
-                      </article>
-                      {/* Post Image */}
-                      <div className="p-img-container">
-                        {apod.url.includes("youtube") ? (
-                          <img
-                            alt={apod.explanation}
-                            src={apod.thumbnail_url}
-                          ></img>
-                        ) : (
-                          <img alt={apod.explanation} src={apod.url}></img>
-                        )}
+              {this.state.apodQuery.length > 0 ? (
+                <div className="p-container">
+                  {this.state.apodQuery.map((apod, index) => (
+                    <section className="animate__animated animate__fadeIn p-border">
+                      <div className="p-img-box">
+                        <article className="p-button-container">
+                          {/* Like Button */}
+
+                          {this.state.apodDates.includes(apod.date) ||
+                          this.state.apodLiked.includes(apod) ? (
+                            <button onClick={(e) => this.unlike(apod, index)}>
+                              <img alt="You liked this" src={FilledHeart} />
+                            </button>
+                          ) : (
+                            <button onClick={(e) => this.like(apod, index)}>
+                              <img alt="Click to like this" src={LikeHeart} />
+                            </button>
+                          )}
+                        </article>
+                        {/* Post Image */}
+                        <div className="p-img-container">
+                          {apod.url.includes("youtube") ? (
+                            <img
+                              alt={apod.explanation}
+                              src={apod.thumbnail_url}
+                            ></img>
+                          ) : (
+                            <img alt={apod.explanation} src={apod.url}></img>
+                          )}
+                        </div>
+                        {/* Title of Post */}
+                        <h1 className="p-title animate__animated animate__fadeInUp">
+                          {apod.title}
+                        </h1>
+                        {/* Sub */}
+                        <aside className="p-sub-col animate__animated animate__fadeInUp">
+                          <span className="p-sub-date">
+                            <p>{apod.date} </p>
+                          </span>
+                          <hr />
+                          <footer className="p-sub">
+                            <p>{apod.explanation} </p>
+                          </footer>
+                        </aside>
                       </div>
-                      {/* Title of Post */}
-                      <h1 className="p-title animate__animated animate__fadeInUp">
-                        {apod.title}
-                      </h1>
-                      {/* Sub */}
-                      <aside className="p-sub-col animate__animated animate__fadeInUp">
-                        <span className="p-sub-date">
-                          <p>Date of Capture: {apod.date} </p>
-                        </span>
-                        <hr />
-                        <footer className="p-sub">
-                          <p>{apod.explanation} </p>
-                        </footer>
-                      </aside>
-                    </div>
-                  </section>
-                ))}
-              </div>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <footer className="l-footer">
+                  <img src={Loading} alt="The page is loading" />
+                </footer>
+              )}
             </div>
             {this.state.loading === true ? (
               <footer className="l-footer">
@@ -313,49 +403,56 @@ class Home extends React.Component {
             }
           >
             <div className="p-box">
-              <div className="p-container">
-                {this.state.apodLiked.reverse().map((apod, index) => (
-                  <section className="p-border">
-                    <div className="p-img-box">
-                      <article className="p-button-container">
-                        {this.state.apodLiked.includes(apod) ? (
-                          <button onClick={(e) => this.unlike(apod, index)}>
-                            <img alt="You liked this" src={FilledHeart} />
-                          </button>
-                        ) : (
-                          <button onClick={(e) => this.like(apod, index)}>
-                            <img alt="Click to like this" src={LikeHeart} />
-                          </button>
-                        )}
-                      </article>
-                      <div className="p-img-container">
-                        {apod.url.includes("youtube") ? (
-                          <a href={apod.url}>
-                            <img
-                              alt={apod.explanation}
-                              src={apod.thumbnail_url}
-                            ></img>
-                          </a>
-                        ) : (
-                          <img alt={apod.explanation} src={apod.url}></img>
-                        )}
+              {this.state.apodLiked.length > 0 ? (
+                <div className="p-container">
+                  {this.state.apodLiked.reverse().map((apod, index) => (
+                    <section className="p-border">
+                      <div className="p-img-box">
+                        <article className="p-button-container">
+                          {this.state.apodLiked.includes(apod) ? (
+                            <button onClick={(e) => this.unlike(apod, index)}>
+                              <img alt="You liked this" src={FilledHeart} />
+                            </button>
+                          ) : (
+                            <button onClick={(e) => this.like(apod, index)}>
+                              <img alt="Click to like this" src={LikeHeart} />
+                            </button>
+                          )}
+                        </article>
+                        <div className="p-img-container">
+                          {apod.url.includes("youtube") ? (
+                            <a href={apod.url}>
+                              <img
+                                alt={apod.explanation}
+                                src={apod.thumbnail_url}
+                              ></img>
+                            </a>
+                          ) : (
+                            <img alt={apod.explanation} src={apod.url}></img>
+                          )}
+                        </div>
+
+                        <h1 className="p-title">{apod.title}</h1>
+
+                        <aside className="p-sub-col">
+                          <span className="p-sub-date">
+                            <p>Date of Capture: {apod.date} </p>
+                          </span>
+                          <hr />
+                          <footer className="p-sub">
+                            <p>{apod.explanation} </p>
+                          </footer>
+                        </aside>
                       </div>
-
-                      <h1 className="p-title">{apod.title}</h1>
-
-                      <aside className="p-sub-col">
-                        <span className="p-sub-date">
-                          <p>Date of Capture: {apod.date} </p>
-                        </span>
-                        <hr />
-                        <footer className="p-sub">
-                          <p>{apod.explanation} </p>
-                        </footer>
-                      </aside>
-                    </div>
-                  </section>
-                ))}
-              </div>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <div className="error-message">
+                  Uh oh, you don't have any likes! Check out the APOD Tab
+                  (Astronomy Post Of the Day) to start liking some posts!
+                </div>
+              )}
             </div>
           </main>
         ) : (
@@ -369,4 +466,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default withCookies(Home);

@@ -197,6 +197,7 @@ align-items: flex-end;
 }
 
 .p-sub-date {
+  text-align: center;
 padding-top: 1vh;
 font-size: 2vh;
 }

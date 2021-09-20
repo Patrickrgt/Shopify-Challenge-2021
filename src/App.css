@@ -57,21 +57,17 @@ opacity: .5;
   transition: 1s ease all;
 }
 
-.n-item:hover {
-color: rgb(128, 128, 128);
-  transition: 1s ease all;
-}
-
 .n-button {
   width: 24px;
   height: 24px;;
 }
 
 .active {
-  color: rgb(128, 128, 128);
+  opacity: .5;
 }
 
 .n-item button{
+  cursor: pointer;
   font-family: 'Space Mono', sans-serif;
   letter-spacing: 3px;
   font-size: 3vh;
@@ -80,7 +76,13 @@ color: rgb(128, 128, 128);
   border: none;
   background: transparent;
   color: white;
+  transition: all 1s ease;
  
+}
+
+.n-item button:hover{
+  color: rgb(128, 128, 128);
+  transition: all 1s ease;
 }
 /*  */
 /*  */
@@ -134,11 +136,22 @@ align-items: flex-end;
   padding: 1vh 1vh 0 0 ;
   border: none;
   background: transparent;
+  position: relative;
+  right: 0px;
+  top: 0px;
+}
+
+.p-img-container button {
+  width: 100%;
+  border: none;
+  background: transparent;
+
 }
 
 .p-button-container img {
   height: 24px;
   width: 24px;
+  
 }
 
 .p-title {
@@ -165,6 +178,7 @@ align-items: flex-end;
 }
 
 .p-container img {
+  cursor: pointer;
   border-radius: 5px;
 }
 
@@ -197,6 +211,7 @@ align-items: flex-end;
 }
 
 .p-sub-date {
+  text-align: center;
 padding-top: 1vh;
 font-size: 2vh;
 }
@@ -229,6 +244,19 @@ hr {
 /*  */
 /*  */
 /* End of Loading Styling */
+
+/* Error Styling */
+.error-message {
+  width: 90%;
+  margin: auto;
+  color: white;
+  font-size: 4vh;
+  text-align: center;
+}
+/*  */
+/*  */
+/* End of Error Styling */
+
 
 /* Animation Styling */
 .animate__animated.animate__fadeIn {
